@@ -1,0 +1,152 @@
+/* Animations */
+@keyframes slide-in-from-right {
+    100% {
+        transform: translateX(-400px);
+        -webkit-transform: translateX(-400px);
+        -moz-transform: translateX(-400px);
+        -ms-transform: translateX(-400px);
+        -o-transform: translateX(-400px);
+    }
+}
+
+/* PLAYER SCREEN */
+.playerScreen {
+    height: 390px;
+    overflow: hidden;
+    position: absolute;
+    width: 464px;
+    z-index: 200;
+}
+
+/* SCREEN BACKGROUND */
+.screenBackground {
+    position: absolute;
+    z-index: 101;
+}
+
+.screenBackground {
+    left: 42px;
+    top: 132px;
+}
+
+/* .screenBackground.lg {
+    left: 42px;
+    top: 132px;
+} */
+
+/* .screenBackground.md {
+    left: 58px;
+    top: 82px;
+} */
+
+/* .screenBackground.sm {
+    left: 0;
+    top: 0;
+}
+
+.screenBackground.xs {
+    left: 0;
+    top: 0;
+} */
+
+.magnifyingGlass {
+    position: absolute;
+    z-index: 102;
+    left: 75px;
+    top: 98px;
+}
+
+/* .magnifyingGlass.lg {
+    left: 75px;
+    top: 98px;
+}
+
+.magnifyingGlass.md {
+    left: 70px;
+    top: 70px;
+}
+
+.magnifyingGlass.sm {
+    left: 12px;
+    top: 10px;
+}
+
+.magnifyingGlass.xs {
+    left: 16px;
+    top: 9px;
+} */
+
+.searchingText {
+    position: absolute;
+    z-index: 102;
+    left: 95px;
+    top: 100px;
+}
+
+/* .searchingText.lg {
+    left: 95px;
+    top: 100px;
+}
+
+.searchingText.md {
+    left: 93px;
+    top: 73px;
+}
+
+.searchingText.sm {
+    left: 31px;
+    top: 13px;
+}
+
+.searchingText.xs {
+    left: 36px;
+    top: 11px;
+} */
+
+.screenMessage {
+    height: 110px;
+    left: 490px;
+    top: 210px;
+    width: 280px;
+
+    animation-delay: 900ms;
+    animation-timing-function: ease-out;
+    animation: slide-in-from-right 1000ms forwards;
+    -webkit-animation: slide-in-from-right 1000ms forwards;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    z-index: 102;
+}
+
+/* .screenMessage.lg {
+    height: 110px;
+    left: 490px;
+    top: 210px;
+    width: 280px;
+}
+
+.screenMessage.sm {
+    height: 50px;
+    left: 413px;
+    top: 99px;
+    width: 338px;
+}
+
+.screenMessage.md {
+    height: 110px;
+    left: 501px;
+    top: 146px;
+    width: 248px;
+}
+
+.screenMessage.xs {
+    height: 79px;
+    left: 425px;
+    top: 23px;
+    width: 248px;
+} */
+
+.screenSliderBtn {
+    cursor: pointer;
+}

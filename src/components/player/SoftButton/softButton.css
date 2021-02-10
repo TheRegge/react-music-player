@@ -1,0 +1,64 @@
+.softButton {
+  color: red;
+  cursor: pointer;
+  margin-top: 5px;
+  z-index: 120;
+  -webkit-font-smoothing: always;
+}
+
+.softButton .btn-top {
+  transition-property: all;
+  transition-duration: .2s;
+  transition-timing-function: ease-in;
+  transform: translate(3 5);
+  -webkit-transform: translate(3 5);
+  -moz-transform: translate(3 5);
+  -ms-transform: translate(3 5);
+  -o-transform: translate(3 5);
+  /* transform-origin: 3px 5px; */
+}
+
+.softButton .btn-top:hover {
+  opacity: .6;
+  transform: skew(3deg) rotate(2deg);
+  -webkit-transform: skew(3deg) rotate(2deg);
+  -moz-transform: skew(3deg) rotate(2deg);
+  -ms-transform: skew(3deg) rotate(2deg);
+  -o-transform: skew(3deg) rotate(2deg);
+}
+
+text {
+  pointer-events: none;
+}
+
+.softButton_container {
+  /* border: solid 1px yellow; */
+  height: 54px;
+  position: relative;
+  width: 112px;
+  
+}
+
+.softButton_text {
+  align-items: center;
+  color: #ccc;
+  display: flex;
+  flex-direction: row;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-size: 14px;
+  height: 42px;
+  justify-content: center;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  position: absolute;
+  text-transform: uppercase;
+  text-transform: uppercase;
+  top: 4px;
+  width: 95px;
+}
+
+svg.softButton {
+
+}
