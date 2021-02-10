@@ -1,0 +1,80 @@
+@keyframes slide-in {
+    0% {
+        transform: translateX(100px);
+        -webkit-transform: translateX(100px);
+        -moz-transform: translateX(100px);
+        -ms-transform: translateX(100px);
+        -o-transform: translateX(100px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0px);
+        -webkit-transform: translateX(0px);
+        -moz-transform: translateX(0px);
+        -ms-transform: translateX(0px);
+        -o-transform: translateX(0px);
+        opacity: 1;
+    }
+}
+
+.player {
+    animation-timing-function: ease-out;
+    animation: slide-in 1000ms forwards;
+    -moz-animation: slide-in 1000ms forwards;
+    -webkit-animation: slide-in 1000ms forwards;
+    -o-animation: slide-in 1000ms forwards;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    box-shadow: 0 3px 8px 3px rgba(0, 0, 0, .3);
+    -moz-box-shadow: 0 3px 8px 3px rgba(0, 0, 0, .3);
+    -webkit-box-shadow: 0 3px 8px 3px rgba(0, 0, 0, .3);
+    height: 417px;
+    margin-top: 40px;
+    position: relative;
+    width: 600px;
+    z-index: 100;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+
+
+.playerBackground {
+    left: 0;
+    position: absolute;
+    top: 0;
+    z-index: 100;
+}
+
+.rainbow {
+    bottom: 0;
+    position: fixed;
+    right: 0;
+    z-index: 110;
+}
+
+.bgTitle {
+    left: 25px;
+    position: absolute;
+    top: 23px;
+    z-index: 120;
+}
+
+.bgSubtitle {
+    left: 25px;
+    position: absolute;
+    top: 59px;
+    z-index: 120;
+}
+
+.softButtons {
+    top: 150px;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 18px;
+    z-index: 310;
+}
+

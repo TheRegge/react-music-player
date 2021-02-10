@@ -1,0 +1,30 @@
+/* Animations */
+@keyframes scroll-text {
+    60% {
+        transform: translateX(-245px);
+        -webkit-transform: translateX(-245);
+    }
+    100% {
+        transform: translateX(0px);
+        -webkit-transform: translateX(0px);
+    }
+}
+
+.textScroller {
+    white-space: nowrap;
+    width: 285px;
+    height: 33px;
+    overflow: hidden;
+}
+
+/* .textClipper {
+    width: 283px;
+    overflow: hidden;
+} */
+
+.songTitle.scrolling {
+    animation-timing-function: linear;
+    -webkit-animation-timing-function: linear;
+    animation: scroll-text 12s infinite;
+    -webkit-animation: scroll-text 12s infinite;
+}

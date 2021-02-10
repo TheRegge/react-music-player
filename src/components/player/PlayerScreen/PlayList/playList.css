@@ -1,0 +1,116 @@
+.playList {
+    /* attempt styling scrollbar in FF */
+    scrollbar-color: rgba(0, 18, 11, .16) transparent;
+    scrollbar-width: auto;
+    height: 198px;
+    left: 42px;
+    top: 174px;
+    width: 400px;
+    overflow: hidden;
+    display: flex;
+    display: block;
+    position: absolute;
+    z-index: 110;
+    overflow-Y: scroll;
+    overflow-X: hidden;
+    -webkit-font-smoothing: none;
+}
+
+/* .playList.lg {
+    height: 198px;
+    left: 42px;
+    top: 174px;
+    width: 400px;
+}
+
+.playList.md {
+    height: 231px;
+    left: 63px;
+    top: 113px;
+    width: 354px;
+}
+
+.playList.sm {
+    height: 246px;
+    left: 4px;
+    top: 32px;
+    width: 376px;
+}
+
+.playList.xs {
+    height: 95px;
+    left: 5px;
+    top: 30px;
+    width: 321px;
+} */
+
+
+
+.scroller {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    width: 373px;
+    line-height: 42px;
+}
+
+.scroller.xs {
+    line-height: 29px;
+}
+
+.scroller p {
+    margin: 0;
+    padding: 0;
+}
+
+.playList .listItem {
+    width: 377px;
+    align-content: flex-end;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 5px;
+    text-align: left;
+    text-transform: uppercase;
+    transition: background-color 0.3s linear;
+    -webkit-transition: background-color 0.3s linear;
+    -moz-transition: background-color 0.3s linear;
+    -ms-transition: background-color 0.3s linear;
+    -o-transition: background-color 0.3s linear;
+}
+
+/* .playList.lg .listItem {
+    width: 377px;
+}
+
+.playList.md .listItem {
+    width: 335px;
+}
+
+.playList.sm .listItem {
+    width: 355px;
+}
+
+.playList.xs .listItem {
+    width: 301px;
+} */
+
+.listItem.playing {
+    background-color: rgba(0, 18, 11, .06);
+}
+
+.playList::-webkit-scrollbar {
+    background-color: transparent;
+    width: 23px;
+}
+
+.playList::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.playList::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 18, 11, .16);
+    border: solid 1px rgba(0, 18, 11, .2);
+}
