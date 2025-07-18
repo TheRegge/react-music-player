@@ -70,9 +70,7 @@ function Scroller(props) {
         return (
           <div
             key={`${song.id || song.title}-${index}`}
-            onClick={() => {
-              handleClick(index)
-            }}
+            onClick={() => handleClick(index)}
             className={listItemClasses}
             aria-label={`Song track: ${song.title} by ${song.artist || 'Unknown Artist'}`}
           >

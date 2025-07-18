@@ -3,7 +3,7 @@ import { loadMoodPlaylist, getMoodById } from '../data/moods'
 
 const PlayerContext = createContext()
 
-const NUMBER_SONGS_PER_TRACK = 8
+const NUMBER_SONGS_PER_TRACK = 10
 
 const initialState = {
   mood: undefined,
