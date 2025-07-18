@@ -1,8 +1,8 @@
 /* Jamendo Attribution - Retro style to match music player */
 .jamendo-attribution {
   position: absolute;
-  top: 60px; /* Position below the GROOVY title */
-  left: 30px;
+  top: 70px; /* Position below the GROOVY title */
+  left: 25px;
   z-index: 120;
   font-family: 'Courier New', monospace;
 }
@@ -41,7 +41,7 @@
     top: 50px;
     left: 25px;
   }
-  
+
   .jamendo-text {
     font-size: 10px;
   }
@@ -52,7 +52,7 @@
     top: 45px;
     left: 20px;
   }
-  
+
   .jamendo-text {
     font-size: 9px;
     letter-spacing: 0.3px;

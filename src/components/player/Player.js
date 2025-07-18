@@ -15,7 +15,7 @@ import SoftButton from './SoftButton/SoftButton'
 
 function Player() {
   const [ready, setReady] = useState(false)
-  const { 
+  const {
     mood,
     playlist,
     playStatus,
@@ -23,7 +23,7 @@ function Player() {
     setTrackNumber,
     setPlayStatus,
     setLoadingStatus,
-    setPlayingStatus
+    setPlayingStatus,
   } = usePlayer()
   const { size: windowSize } = useWindow()
 
@@ -35,13 +35,19 @@ function Player() {
     console.error('Sound Error:', errorCode, errorDescription)
   }, [])
 
-  const handleSongLoading = useCallback(({ bytesLoaded, bytesTotal, duration }) => {
-    setLoadingStatus({ bytesLoaded, bytesTotal, duration })
-  }, [setLoadingStatus])
+  const handleSongLoading = useCallback(
+    ({ bytesLoaded, bytesTotal, duration }) => {
+      setLoadingStatus({ bytesLoaded, bytesTotal, duration })
+    },
+    [setLoadingStatus]
+  )
 
-  const handleSongPlaying = useCallback(({ position, duration }) => {
-    setPlayingStatus({ position, duration })
-  }, [setPlayingStatus])
+  const handleSongPlaying = useCallback(
+    ({ position, duration }) => {
+      setPlayingStatus({ position, duration })
+    },
+    [setPlayingStatus]
+  )
 
   useEffect(() => setReady(true), [])
 
