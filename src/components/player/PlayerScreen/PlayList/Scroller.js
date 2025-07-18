@@ -64,8 +64,9 @@ function Scroller(props) {
       style={{ top: props.scroll }}
     >
       {playlist && playlist.map((song, index) => {
-        const playing = trackNumber === index
-        const listItemClasses = playing ? 'listItem playing' : 'listItem'
+        const isCurrentTrack = trackNumber === index
+        const isActuallyPlaying = isCurrentTrack && playStatus === 'PLAYING'
+        const listItemClasses = isCurrentTrack ? 'listItem playing' : 'listItem'
         return (
           <div
             key={`${song.id || song.title}-${index}`}
@@ -78,7 +79,7 @@ function Scroller(props) {
             {index + 1}.{' '}
             <TextScroller 
               track={song} 
-              playing={playing} 
+              playing={isActuallyPlaying} 
               width={song.artist ? 245 : 285} // Less width when showing CC icon
             />
             {song.artist && (
