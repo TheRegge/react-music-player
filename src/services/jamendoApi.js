@@ -33,7 +33,7 @@ export const fetchTracksByMood = async (mood, limit = 10) => {
     const params = new URLSearchParams({
       client_id: CLIENT_ID,
       format: 'json',
-      limit: '10',
+      limit: limit.toString(),
       fuzzytags: tagsQuery,
       include: 'licenses+musicinfo',
       audioformat: 'mp32', // Standard quality MP3
@@ -52,11 +52,7 @@ export const fetchTracksByMood = async (mood, limit = 10) => {
       throw new JamendoApiError(`API error: ${data.headers?.error_message || 'Unknown error'}`)
     }
 
-    console.log(`Jamendo API returned ${data.results?.length || 0} tracks for mood: ${mood}`)
-    const transformedTracks = transformTracksData(data.results || [])
-    console.log('Transformed tracks:', transformedTracks.map((t, i) => `${i+1}. ${t.title} - URL: ${t.url ? 'OK' : 'MISSING'}`))
-    
-    return transformedTracks
+    return transformTracksData(data.results || [])
   } catch (error) {
     console.error('Error fetching tracks from Jamendo:', error)
     throw error
