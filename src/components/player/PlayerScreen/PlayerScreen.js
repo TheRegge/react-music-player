@@ -10,7 +10,7 @@ function PlayerScreen() {
   const { moodObject } = usePlayer()
   const { size: windowSize } = useWindow()
   
-  let message = 'Select a playlist with the buttons on the right!'
+  let message = '🎵 Ready to groove? Pick your vibe from the playlist menu! 🎵'
 
   return (
     <div className={`playerScreen ${windowSize}`}>
