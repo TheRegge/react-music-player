@@ -1,13 +1,17 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { usePlayer } from '../../../../contexts/PlayerContext'
+import { useWindow } from '../../../../contexts/WindowContext'
 import Loadingbarsvg from './Loadingbarsvg'
 import './loadingsong.css'
 
-const Loadingsong = props => {
+const Loadingsong = () => {
+  const { loadingStatus, playStatus, playingStatus } = usePlayer()
+  const { size: windowSize } = useWindow()
+  
   const showPlaying =
-    props.playStatus === 'PLAYING' || props.playStatus === 'PAUSED'
+    playStatus === 'PLAYING' || playStatus === 'PAUSED'
 
-  // const showLoading = props.playStatus === 'LOADING'
+  // const showLoading = playStatus === 'LOADING'
 
   const makeTime = ms => {
     const timeInSeconds = ms / 1000
@@ -19,8 +23,8 @@ const Loadingsong = props => {
   }
 
   let positionStyle = {}
-  let p = props.playingStatus.position
-  let d = props.playingStatus.duration
+  let p = playingStatus.position
+  let d = playingStatus.duration
   let r = p / d
   let pos = Math.round(260 * r)
   if (!isNaN(r)) {
@@ -28,14 +32,14 @@ const Loadingsong = props => {
     positionStyle = { width: `${pos}px`, color: '#70B682' }
   }
 
-  let playTime = makeTime(props.playingStatus.position)
+  let playTime = makeTime(playingStatus.position)
   let playTimeLeft = makeTime(
-    props.playingStatus.duration - props.playingStatus.position
+    playingStatus.duration - playingStatus.position
   )
   return (
-    <div className={`loadingsong ${props.windowSize}`}>
+    <div className={`loadingsong ${windowSize}`}>
       <span aria-label="Loading status" className="loadingStatus">
-        {props.loadingStatus}
+        {loadingStatus}
       </span>
       {showPlaying && (
         <div>
@@ -53,11 +57,4 @@ const Loadingsong = props => {
   )
 }
 
-const mapStateToProps = state => ({
-  loadingStatus: state.player.loadingStatus,
-  playStatus: state.player.playStatus,
-  playingStatus: state.player.playingStatus,
-  windowSize: state.window.size
-})
-
-export default connect(mapStateToProps)(Loadingsong)
+export default Loadingsong

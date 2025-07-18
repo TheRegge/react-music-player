@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
-import {
-  setTrackNumber,
-  setPlayStatus,
-  setLoadingStatus,
-  setPlayingStatus
-} from '../../actions/player'
+import React, { useState, useEffect, useCallback } from 'react'
+import { usePlayer } from '../../contexts/PlayerContext'
+import { useWindow } from '../../contexts/WindowContext'
 import './player.css'
 
-import Sound from 'react-sound'
+import Sound from '../Sound'
+import JamendoAttribution from '../JamendoAttribution'
 
 import { moods } from '../../data/moods'
 import PlayerBgLg from './PlayerBgLg'
@@ -17,31 +13,43 @@ import PlayerScreen from './PlayerScreen/PlayerScreen'
 import Sliders from './Sliders/Sliders'
 import SoftButton from './SoftButton/SoftButton'
 
-function Player(props) {
+function Player() {
   const [ready, setReady] = useState(false)
+  const { 
+    mood,
+    playlist,
+    playStatus,
+    trackNumber,
+    setTrackNumber,
+    setPlayStatus,
+    setLoadingStatus,
+    setPlayingStatus
+  } = usePlayer()
+  const { size: windowSize } = useWindow()
 
-  const handleFinishedPlaying = () => {
-    props.setTrackNumber(props.trackNumber + 1)
-  }
+  const handleFinishedPlaying = useCallback(() => {
+    setTrackNumber(trackNumber + 1)
+  }, [trackNumber, setTrackNumber])
 
-  const handleSoundError = (errorCode, errorDescription) => {
+  const handleSoundError = useCallback((errorCode, errorDescription) => {
     console.log(errorCode, errorDescription)
-  }
+  }, [])
 
-  const handleSongLoading = ({ bytesLoaded, bytesTotal, duration }) => {
-    props.setLoadingStatus({ bytesLoaded, bytesTotal, duration })
-  }
+  const handleSongLoading = useCallback(({ bytesLoaded, bytesTotal, duration }) => {
+    setLoadingStatus({ bytesLoaded, bytesTotal, duration })
+  }, [setLoadingStatus])
 
-  const handleSongPlaying = ({ position, duration }) => {
-    props.setPlayingStatus({ position, duration })
-  }
+  const handleSongPlaying = useCallback(({ position, duration }) => {
+    setPlayingStatus({ position, duration })
+  }, [setPlayingStatus])
 
-  useEffect(() => setReady(true))
+  useEffect(() => setReady(true), [])
 
   return (
-    <div className={`player ${props.windowSize}`}>
+    <div className={`player ${windowSize}`}>
       <PlayerBgLg className="playerBackground" />
       <PlayerDecorations />
+      <JamendoAttribution />
       <Sliders />
       <PlayerScreen />
 
@@ -54,7 +62,7 @@ function Player(props) {
             testId="moodButton"
             className="softButton"
             text={mood.name}
-            mood={mood.name}
+            moodId={mood.id}
           />
         ))}
       </div>
@@ -63,9 +71,9 @@ function Player(props) {
       {/* Does not add any visible element to the DOM */}
       {ready && (
         <Sound
-          url={props.playlist ? props.playlist[props.trackNumber].url : ''}
+          url={playlist ? playlist[trackNumber].url : ''}
           volume={20}
-          playStatus={props.playStatus}
+          playStatus={playStatus}
           onLoading={handleSongLoading}
           onFinishedPlaying={handleFinishedPlaying}
           onError={handleSoundError}
@@ -76,29 +84,4 @@ function Player(props) {
   )
 }
 
-const mapStateToProps = state => {
-  return {
-    mood: state.player.mood ? state.player.mood.name : undefined,
-    playlist: state.player.mood ? state.player.mood.playlist : undefined,
-    playStatus: state.player.playStatus,
-    playingStatus: state.player.playingStatus,
-    trackNumber: state.player.trackNumber,
-    windowWidth: state.window.width,
-    windowHeight: state.window.height,
-    windowSize: state.window.size
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    setTrackNumber: num => dispatch(setTrackNumber(num)),
-    setPlayStatus: status => dispatch(setPlayStatus(status)),
-    setPlayingStatus: status => dispatch(setPlayingStatus(status)),
-    setLoadingStatus: status => dispatch(setLoadingStatus(status))
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Player)
+export default Player

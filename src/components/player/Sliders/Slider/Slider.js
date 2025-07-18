@@ -1,12 +1,13 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { usePlayer } from '../../../../contexts/PlayerContext'
 
 import './slider.css'
 import SliderBtn from './SliderBtn'
 import SliderTrack from './SliderTrack'
 
 const Slider = props => {
-  const animClass = props.playStatus === 'PLAYING' ? 'animated' : ''
+  const { playStatus } = usePlayer()
+  const animClass = playStatus === 'PLAYING' ? 'animated' : ''
   const style = {
     top: `${props.top}px`,
     right: `${props.right}px`
@@ -23,9 +24,4 @@ const Slider = props => {
   )
 }
 
-const mapStateToProps = state => ({
-  playStatus: state.player.playStatus,
-  windowSize: state.window.size
-})
-
-export default connect(mapStateToProps)(Slider)
+export default Slider

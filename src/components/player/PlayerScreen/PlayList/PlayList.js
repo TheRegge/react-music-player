@@ -1,9 +1,13 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import { usePlayer } from '../../../../contexts/PlayerContext'
+import { useWindow } from '../../../../contexts/WindowContext'
 import './playList.css'
 import Scroller from './Scroller'
 
 const PlayList = props => {
+  const { moodObject } = usePlayer()
+  const { size: windowSize } = useWindow()
+  
   const getScrollerHeight = height => {
     props.getHeight(height)
   }
@@ -17,18 +21,13 @@ const PlayList = props => {
   useEffect(() => {
     //   scroll to the first track on mood change
     scrollToTop(document.getElementById('playlist'))
-  }, [props.mood])
+  }, [moodObject])
 
   return (
-    <div id="playlist" className={`playList ${props.windowSize}`}>
+    <div id="playlist" className={`playList ${windowSize}`}>
       <Scroller scroll={props.scroll} getHeight={getScrollerHeight} />
     </div>
   )
 }
 
-const mapStateToProps = state => ({
-  mood: state.player.mood,
-  windowSize: state.window.size
-})
-
-export default connect(mapStateToProps)(PlayList)
+export default PlayList

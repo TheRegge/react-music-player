@@ -1,14 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import posed from 'react-pose';
+import { useWindow } from '../../../../contexts/WindowContext';
+import { motion } from 'framer-motion';
 import ScreenSliderBtnSvg from './ScreenSliderBtnSvg';
 
-
-const MyComponent = React.forwardRef((props, ref) => {
-
+const ScreenSliderBtn = (props) => {
+    const { size: windowSize } = useWindow();
+    
     let style = {position: 'absolute', zIndex: 120};
 
-    switch(props.windowSize) {
+    switch(windowSize) {
         case 'md':
         case 'lg':
             style.left = 439;
@@ -20,32 +20,25 @@ const MyComponent = React.forwardRef((props, ref) => {
             style.top = 28;
             break;
         default:
-        style.left = 200;
-        style.top = 40;
+            style.left = 200;
+            style.top = 40;
     }
 
-
-
     return (
-    <ScreenSliderBtnSvg
-        className="screenSliderBtn"
-        ref={ref}
-        style={style}
-       callback={props.callback}
-    />
-  )});
+        <motion.div
+            className="screenSliderBtn"
+            style={style}
+            drag="y"
+            dragConstraints={{ top: 0, bottom: 95 }}
+            onDrag={(event, info) => {
+                if (props.callback) {
+                    props.callback(info.point.y);
+                }
+            }}
+        >
+            <ScreenSliderBtnSvg callback={props.callback} />
+        </motion.div>
+    );
+};
 
-  const PosedComponent = posed(MyComponent)({
-    draggable: 'y',
-    dragBounds: {top: 0, bottom: 95}
-  });
-
-
-  const mapStateToProps = (state) => ({
-      windowSize: state.window.size
-  });
-  const Connected = connect(mapStateToProps)(PosedComponent);
-
-  export default (props) => <Connected
-    onValueChange={{ y: props.callback }}
-/>;
+export default ScreenSliderBtn;

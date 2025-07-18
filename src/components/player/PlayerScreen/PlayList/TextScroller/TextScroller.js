@@ -1,36 +1,36 @@
-import React from 'react'
-import { connect } from 'react-redux'
+import React, { useState, useRef, useEffect } from 'react'
+import { useWindow } from '../../../../../contexts/WindowContext'
 import './textscroller.css'
 
-class TextScroller extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      scrollable: false
+const TextScroller = ({ track, text, playing, width }) => {
+  const { size: windowSize } = useWindow()
+  const [scrollable, setScrollable] = useState(false)
+  const songTitleRef = useRef(null)
+  
+  // Support both old format (text) and new format (track object)
+  const displayText = track ? `${track.title} by ${track.artist}` : text
+  
+  useEffect(() => {
+    if (songTitleRef.current) {
+      const titleWidth = songTitleRef.current.scrollWidth
+      if (titleWidth > width) {
+        setScrollable(true)
+      }
     }
-  }
-  componentDidMount = () => {
-    const width = this.refs.songTitle.scrollWidth
-    if (width > this.props.width) {
-      this.setState({ scrollable: true })
-    }
-  }
+  }, [width, displayText])
 
-  render() {
-    const textClasses =
-      this.state.scrollable && this.props.playing
-        ? `songTitle scrolling ${this.props.windowSize}`
-        : 'songTitle'
-    return (
-      <div className="textScroller">
-        <div className={textClasses} ref="songTitle">
-          {this.props.text}
-        </div>
+  const textClasses =
+    scrollable && playing
+      ? `songTitle scrolling ${windowSize}`
+      : 'songTitle'
+      
+  return (
+    <div className="textScroller">
+      <div className={textClasses} ref={songTitleRef}>
+        {displayText}
       </div>
-    )
-  }
+    </div>
+  )
 }
-const mapStateToProps = state => ({
-  windowSize: state.window.size
-})
-export default connect(mapStateToProps)(TextScroller)
+
+export default TextScroller

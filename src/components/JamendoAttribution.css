@@ -1,0 +1,60 @@
+/* Jamendo Attribution - Retro style to match music player */
+.jamendo-attribution {
+  position: absolute;
+  top: 60px; /* Position below the GROOVY title */
+  left: 30px;
+  z-index: 120;
+  font-family: 'Courier New', monospace;
+}
+
+.jamendo-text {
+  color: #888;
+  font-size: 11px;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.jamendo-link {
+  color: #00ff88;
+  cursor: pointer;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.jamendo-link:hover {
+  color: #00ffaa;
+  text-shadow: 0 0 5px rgba(0, 255, 136, 0.6);
+}
+
+.jamendo-link:focus {
+  outline: none;
+  color: #00ffaa;
+  text-shadow: 0 0 5px rgba(0, 255, 136, 0.6);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .jamendo-attribution {
+    top: 50px;
+    left: 25px;
+  }
+  
+  .jamendo-text {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .jamendo-attribution {
+    top: 45px;
+    left: 20px;
+  }
+  
+  .jamendo-text {
+    font-size: 9px;
+    letter-spacing: 0.3px;
+  }
+}

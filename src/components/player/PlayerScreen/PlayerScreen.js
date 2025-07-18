@@ -1,11 +1,15 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { usePlayer } from '../../../contexts/PlayerContext'
+import { useWindow } from '../../../contexts/WindowContext'
 import Loadingsong from './Loadingsong/Loadingsong'
 import PlayList from './PlayList/PlayList'
 import ScreenBgLg from './ScreenBgLg'
 import './playerScreen.css'
 
-function PlayerScreen({ playerMood, windowSize }) {
+function PlayerScreen() {
+  const { moodObject } = usePlayer()
+  const { size: windowSize } = useWindow()
+  
   let message = 'Select a playlist with the buttons on the right!'
 
   return (
@@ -17,19 +21,14 @@ function PlayerScreen({ playerMood, windowSize }) {
       <Loadingsong />
 
       {/* PLAYLIST */}
-      {playerMood && <PlayList />}
+      {moodObject && <PlayList />}
 
       {/* SCREEN MESSAGE BEFORE PLAYSLIST IS CHOSEN */}
-      {!playerMood && (
+      {!moodObject && (
         <p className={`screenMessage ${windowSize}`}>{message}</p>
       )}
     </div>
   )
 }
-const mapStateToProps = state => {
-  return {
-    playerMood: state.player.mood,
-    windowSize: state.window.size
-  }
-}
-export default connect(mapStateToProps)(PlayerScreen)
+
+export default PlayerScreen

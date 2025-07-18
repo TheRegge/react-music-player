@@ -101,6 +101,24 @@
     background-color: rgba(0, 18, 11, .06);
 }
 
+/* CC License Icon Styles */
+.track-cc-icon {
+    margin-left: 6px;
+    margin-right: 4px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    flex-shrink: 0;
+    align-self: center;
+    display: flex;
+    align-items: center;
+}
+
+.track-cc-icon:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
 .playList::-webkit-scrollbar {
     background-color: transparent;
     width: 23px;

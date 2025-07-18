@@ -1,18 +1,17 @@
 import React from 'react'
+import { useWindow } from './contexts/WindowContext'
 import './App.css'
 import Player from './components/player/Player'
-import WindowDimensions from './components/WindowDimensions'
 
-const App = props => {
+const App = () => {
+  const { size: windowSize } = useWindow()
+  
   return (
-    <>
-      <WindowDimensions />
-      <div className={`app ${props.windowSize}`}>
-        <section className={`container ${props.windowSize}`}>
-          <Player />
-        </section>
-      </div>
-    </>
+    <div className={`app ${windowSize}`}>
+      <section className={`container ${windowSize}`}>
+        <Player />
+      </section>
+    </div>
   )
 }
 

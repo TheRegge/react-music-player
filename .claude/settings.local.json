@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(cp:*)",
+      "WebFetch(domain:api.jamendo.com)",
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  }
+}

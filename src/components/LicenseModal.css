@@ -1,0 +1,200 @@
+/* License Modal Styles - Retro aesthetic to match music player */
+
+.license-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-family: 'Courier New', monospace;
+}
+
+.license-modal {
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border: 3px solid #444;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  min-height: 400px;
+  overflow-y: auto;
+  position: relative;
+  color: #00ff88;
+}
+
+.license-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #ff6b6b;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.license-modal-close:hover {
+  background-color: rgba(255, 107, 107, 0.2);
+}
+
+.license-modal-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.license-modal-title {
+  color: #00ffaa;
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 2px solid #00ffaa;
+  padding-bottom: 8px;
+}
+
+.track-info {
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid #00ff88;
+  border-radius: 4px;
+  padding: 15px;
+  margin: 0;
+}
+
+.track-info h4 {
+  color: #00ffaa;
+  margin: 0 0 10px 0;
+  font-size: 16px;
+}
+
+.track-info p {
+  margin: 5px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.jamendo-intro {
+  margin: 0;
+}
+
+.jamendo-intro p {
+  margin: 5px 0;
+  font-size: 13px;
+  color: #888;
+  line-height: 1.4;
+}
+
+.jamendo-intro strong {
+  color: #00ff88;
+}
+
+.attribution-info {
+  margin: 0;
+}
+
+.attribution-info h4 {
+  color: #00ffaa;
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.attribution-info p {
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.attribution-example {
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 3px solid #00ff88;
+  padding: 10px 15px;
+  font-size: 12px;
+  font-style: italic;
+  border-radius: 0 4px 4px 0;
+  margin-top: 10px;
+}
+
+.license-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+
+.license-link-btn {
+  background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+  color: #000;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.license-link-btn:hover {
+  background: linear-gradient(135deg, #00ffaa 0%, #00dd77 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.license-link-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .license-modal {
+    margin: 20px;
+    width: calc(100% - 40px);
+  }
+
+  .license-modal-content {
+    padding: 15px;
+  }
+
+  .license-modal-title {
+    font-size: 16px;
+  }
+}
+
+/* Scrollbar styling for retro look */
+.license-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.license-modal::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.license-modal::-webkit-scrollbar-thumb {
+  background: #00ff88;
+  border-radius: 4px;
+}
+
+.license-modal::-webkit-scrollbar-thumb:hover {
+  background: #00ffaa;
+}

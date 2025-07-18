@@ -1,13 +1,20 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { setMood, setTrackNumber, setPlayStatus } from '../../../actions/player'
+import { usePlayer } from '../../../contexts/PlayerContext'
 import './softButton.css'
 
 const SoftButton = props => {
-  const onClickHandler = () => {
-    props.setMood(props.mood)
-    props.setTrackNumber(0)
-    props.setPlayStatus('PLAYING')
+  const { setMood, setTrackNumber, setPlayStatus, playlistLoading } = usePlayer()
+  
+  const onClickHandler = async () => {
+    try {
+      // Use mood ID for Jamendo API
+      await setMood(props.moodId)
+      setTrackNumber(0)
+      setPlayStatus('PLAYING')
+    } catch (error) {
+      console.error('Error setting mood:', error)
+      // Handle error - maybe show a toast or keep current state
+    }
   }
 
   const buttonFullHeight = 54 // 42px + 12px for shadow
@@ -18,9 +25,11 @@ const SoftButton = props => {
       onClick={onClickHandler}
       role="button"
       aria-label={`Select mood ${props.text}`}
-      className="softButton_container"
+      className={`softButton_container ${playlistLoading ? 'loading' : ''}`}
     >
-      <div className="softButton_text">{props.text}</div>
+      <div className="softButton_text">
+        {playlistLoading ? 'Loading...' : props.text}
+      </div>
       <svg
         width={buttonFullWidth}
         height={buttonFullHeight}
@@ -122,18 +131,4 @@ const SoftButton = props => {
   )
 }
 
-const mapStateToProps = state => {
-  return {
-    playerMood: state.player.mood ? state.player.mood.name : undefined
-  }
-}
-
-const mapDispatchToProps = dispatch => ({
-  setMood: mood => dispatch(setMood(mood)),
-  setTrackNumber: num => dispatch(setTrackNumber(num)),
-  setPlayStatus: status => dispatch(setPlayStatus(status))
-})
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SoftButton)
+export default SoftButton
