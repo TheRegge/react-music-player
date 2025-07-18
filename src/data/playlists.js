@@ -1,15 +1,15 @@
 const funk = [
   {
-    url: './mp3/funk/Vintage_Funk.mp3',
-    title: 'Vintage Funk'
+    url: './mp3/funk/funky-vintage-249311.mp3',
+    title: 'Funky Vintage'
   },
   {
     url: './mp3/funk/Chic Funk.m4a',
     title: 'Chic Funk'
   },
   {
-    url: './mp3/funk/Gimme The Funk.mp3',
-    title: 'Gimme The Funk'
+    url: './mp3/funk/city-funk-233627.mp3',
+    title: 'City Funk'
   },
   {
     url: './mp3/funk/The Funk.mp3',
