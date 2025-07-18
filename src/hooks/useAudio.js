@@ -18,13 +18,41 @@ export const useAudio = (url, options = {}) => {
 
   useEffect(() => {
     if (!url) return
+    
+    console.log('Loading audio URL:', url)
+    
+    // Stop any current playback and reset state
+    if (soundRef.current) {
+      soundRef.current.stop()
+      soundRef.current.unload()
+    }
+    setPlaying(false)
+    setPosition(0)
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+    }
 
     const sound = new Howl({
       src: [url],
+      format: ['mp3', 'mpeg'],
       volume: volume / 100,
       onload: () => {
+        console.log('Audio loaded successfully:', url)
         setLoading(false)
         setDuration(sound.duration() * 1000)
+        // If we were supposed to be playing, start now that it's loaded
+        if (optionsRef.current.autoPlay) {
+          sound.play()
+          setPlaying(true)
+          
+          intervalRef.current = setInterval(() => {
+            if (soundRef.current) {
+              const pos = soundRef.current.seek() * 1000
+              setPosition(pos)
+              optionsRef.current.onPlaying?.({ position: pos, duration: sound.duration() * 1000 })
+            }
+          }, 100)
+        }
       },
       onloaderror: (id, error) => {
         console.error('Load error for URL:', url, 'Error:', error)
@@ -60,24 +88,40 @@ export const useAudio = (url, options = {}) => {
   }, [volume])
 
   const play = useCallback(() => {
+    console.log('Play called, current state:', soundRef.current?.state(), 'playing:', playing)
+    
     if (soundRef.current && !playing) {
-      soundRef.current.play()
-      setPlaying(true)
-      
-      intervalRef.current = setInterval(() => {
-        if (soundRef.current) {
-          const pos = soundRef.current.seek() * 1000
-          setPosition(pos)
-          optionsRef.current.onPlaying?.({ position: pos, duration: duration })
-        }
-      }, 100)
+      console.log('Playing audio:', url)
+      // Check if the sound is loaded before trying to play
+      if (soundRef.current.state() === 'loaded') {
+        soundRef.current.play()
+        setPlaying(true)
+        optionsRef.current.autoPlay = false // Clear the flag since we're playing now
+        
+        intervalRef.current = setInterval(() => {
+          if (soundRef.current) {
+            const pos = soundRef.current.seek() * 1000
+            setPosition(pos)
+            optionsRef.current.onPlaying?.({ position: pos, duration: duration })
+          }
+        }, 100)
+      } else {
+        // If not loaded yet, set a flag to auto-play when it loads
+        optionsRef.current.autoPlay = true
+        console.log('Audio not ready, will auto-play when loaded')
+      }
+    } else if (!soundRef.current) {
+      // If no sound object yet, set autoPlay for when it's created
+      optionsRef.current.autoPlay = true
+      console.log('No sound object yet, will auto-play when created')
     }
-  }, [playing, duration])
+  }, [playing, duration, url])
 
   const pause = useCallback(() => {
     if (soundRef.current && playing) {
       soundRef.current.pause()
       setPlaying(false)
+      optionsRef.current.autoPlay = false
       
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
@@ -90,6 +134,7 @@ export const useAudio = (url, options = {}) => {
       soundRef.current.stop()
       setPlaying(false)
       setPosition(0)
+      optionsRef.current.autoPlay = false
       
       if (intervalRef.current) {
         clearInterval(intervalRef.current)

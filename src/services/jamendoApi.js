@@ -36,7 +36,7 @@ export const fetchTracksByMood = async (mood, limit = 10) => {
       limit: limit.toString(),
       fuzzytags: tagsQuery,
       include: 'licenses+musicinfo',
-      audioformat: 'mp31', // Low quality for demo, can be upgraded
+      audioformat: 'mp32', // Standard quality MP3
       order: 'popularity_total'
     })
 
@@ -130,7 +130,7 @@ export const searchTracks = async (query, limit = 20) => {
       limit: limit.toString(),
       search: query,
       include: 'licenses+musicinfo',
-      audioformat: 'mp31',
+      audioformat: 'mp32',
       order: 'relevance'
     })
 
@@ -165,7 +165,7 @@ export const getTrackById = async (trackId) => {
       format: 'json',
       id: trackId,
       include: 'licenses+musicinfo',
-      audioformat: 'mp31'
+      audioformat: 'mp32'
     })
 
     const response = await fetch(`${JAMENDO_API_BASE}/tracks/?${params}`)

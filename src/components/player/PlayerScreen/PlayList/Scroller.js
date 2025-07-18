@@ -22,10 +22,9 @@ function Scroller(props) {
   const handleClick = index => {
     // 1 - this track was not selected before
     if (trackNumber !== index) {
-      // set the player to play
-      // set the current track to this index
-      setPlayStatus('PLAYING')
+      // set the current track to this index and mark for playing
       setTrackNumber(index)
+      setPlayStatus('PLAYING')
     }
 
     // 2 - this track was selected and playing

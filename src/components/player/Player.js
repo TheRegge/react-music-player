@@ -32,7 +32,7 @@ function Player() {
   }, [trackNumber, setTrackNumber])
 
   const handleSoundError = useCallback((errorCode, errorDescription) => {
-    console.log(errorCode, errorDescription)
+    console.error('Sound Error:', errorCode, errorDescription)
   }, [])
 
   const handleSongLoading = useCallback(({ bytesLoaded, bytesTotal, duration }) => {
@@ -72,7 +72,7 @@ function Player() {
       {ready && (
         <Sound
           url={playlist ? playlist[trackNumber].url : ''}
-          volume={20}
+          volume={50}
           playStatus={playStatus}
           onLoading={handleSongLoading}
           onFinishedPlaying={handleFinishedPlaying}
