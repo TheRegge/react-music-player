@@ -4,6 +4,11 @@ import { useAudio } from '../hooks/useAudio'
 const Sound = ({ url, playStatus, volume = 100, onLoading, onPlaying, onFinishedPlaying, onError }) => {
   const loadingReportedRef = useRef(false)
   
+  // Reset loading reported when URL changes
+  useEffect(() => {
+    loadingReportedRef.current = false
+  }, [url])
+  
   const handleError = useCallback((error) => {
     onError?.(0, error.message)
   }, [onError])

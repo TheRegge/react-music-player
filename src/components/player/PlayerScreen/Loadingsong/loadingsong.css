@@ -41,6 +41,27 @@
     -webkit-transition: width .6s;
 }
 
+@keyframes loadingPulse {
+    0% {
+        width: 20px;
+        transform: translateX(0px);
+    }
+    50% {
+        width: 80px;
+        transform: translateX(90px);
+    }
+    100% {
+        width: 20px;
+        transform: translateX(240px);
+    }
+}
+
+.loadingsong .position.loading {
+    width: 20px !important;
+    animation: loadingPulse 2.5s ease-in-out infinite;
+    transition: none;
+}
+
 .loadingsong .position {
     position: absolute;
     top: 21px;

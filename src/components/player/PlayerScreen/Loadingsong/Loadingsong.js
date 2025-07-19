@@ -5,13 +5,15 @@ import Loadingbarsvg from './Loadingbarsvg'
 import './loadingsong.css'
 
 const Loadingsong = () => {
-  const { loadingStatus, playStatus, playingStatus } = usePlayer()
+  const { loadingStatus, playStatus, playingStatus, trackNumber, moodObject } = usePlayer()
   const { size: windowSize } = useWindow()
   
   const showPlaying =
     playStatus === 'PLAYING' || playStatus === 'PAUSED'
 
-  // const showLoading = playStatus === 'LOADING'
+  // Check if song is loading: either explicit loading status or when we have play status but no duration yet
+  const isLoading = (loadingStatus && loadingStatus !== 'Song Fully Loaded' && loadingStatus !== '') || 
+                   (showPlaying && (!playingStatus.duration || playingStatus.duration === 0))
 
   const makeTime = ms => {
     const timeInSeconds = ms / 1000
@@ -47,9 +49,10 @@ const Loadingsong = () => {
           <div className="playTimeLeft">{playTimeLeft}</div>
           <Loadingbarsvg color="rgba(0, 18, 11, .25)" className="bg" />
           <Loadingbarsvg
+            key={`progress-${moodObject?.name}-${trackNumber}`}
             color="#D46A7"
-            style={positionStyle}
-            className="position"
+            style={isLoading ? {} : positionStyle}
+            className={`position ${isLoading ? 'loading' : ''}`}
           />
         </div>
       )}

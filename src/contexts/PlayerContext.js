@@ -55,13 +55,15 @@ const playerReducer = (state, action) => {
       return {
         ...state,
         trackNumber:
-          action.trackNumber < NUMBER_SONGS_PER_TRACK ? action.trackNumber : 0
+          action.trackNumber < NUMBER_SONGS_PER_TRACK ? action.trackNumber : 0,
+        playingStatus: { position: 0, duration: 0 }, // Reset playing status when changing tracks
+        loadingStatus: '' // Reset loading status
       }
     case 'SET_LOADING_STATUS':
       let msg = ''
       
       if (action.loadingStatus.bytesLoaded === 0) {
-        msg = ''
+        msg = 'Loading...'
       } else if (action.loadingStatus.bytesLoaded > 0) {
         const bytes =
           action.loadingStatus.bytesTotal / action.loadingStatus.bytesLoaded
