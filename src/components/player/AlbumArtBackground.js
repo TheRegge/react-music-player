@@ -1,80 +1,76 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { usePlayer } from '../../contexts/PlayerContext'
+import { useCRTEffect } from '../../hooks/useInterferenceEffect'
 import './AlbumArtBackground.css'
 
 const AlbumArtBackground = ({ className }) => {
   const { playlist, trackNumber } = usePlayer()
-  const [images, setImages] = useState([])
-  const containerRef = useRef(null)
-  const timeoutIdsRef = useRef([])
+  const canvasRef = useRef(null)
+  const currentImageRef = useRef(null)
+  const [currentImageUrl, setCurrentImageUrl] = useState(null)
+  
+  // CRT effects hook
+  useCRTEffect(canvasRef.current, currentImageRef.current)
 
-  // Cleanup function
+  // Canvas setup and resize handling
   useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const resizeCanvas = () => {
+      const rect = canvas.getBoundingClientRect()
+      canvas.width = rect.width
+      canvas.height = rect.height
+    }
+
+    resizeCanvas()
+    window.addEventListener('resize', resizeCanvas)
+
     return () => {
-      // Clear all timeouts on unmount
-      timeoutIdsRef.current.forEach(id => clearTimeout(id))
-      
-      // Remove all images from DOM
-      if (containerRef.current) {
-        containerRef.current.innerHTML = ''
-      }
+      window.removeEventListener('resize', resizeCanvas)
     }
   }, [])
 
+  // Image loading and canvas rendering
   useEffect(() => {
     if (playlist && playlist[trackNumber] && playlist[trackNumber].image) {
       const newImageUrl = playlist[trackNumber].image
       
-      // Check if this image is already displayed
-      const existingImage = images.find(img => img.url === newImageUrl && img.active)
-      if (existingImage) return
-
-      // Create new image element
-      const imgElement = document.createElement('img')
-      imgElement.src = newImageUrl
-      imgElement.className = 'album-art-image'
-      imgElement.alt = 'Album art'
+      // Skip if same image
+      if (newImageUrl === currentImageUrl) return
       
-      imgElement.onload = () => {
-        // Add to DOM
-        if (containerRef.current) {
-          containerRef.current.appendChild(imgElement)
-          
-          // Force reflow to ensure the browser registers the element at opacity 0
-          imgElement.offsetHeight
-          
-          // Add active class to trigger fade in
-          requestAnimationFrame(() => {
-            imgElement.classList.add('active')
-            
-            // Fade out and remove previous images
-            const allImages = containerRef.current.querySelectorAll('img')
-            allImages.forEach((img, index) => {
-              if (img !== imgElement) {
-                img.classList.remove('active')
-                // Remove after transition
-                const timeoutId = setTimeout(() => {
-                  if (img.parentNode === containerRef.current) {
-                    containerRef.current.removeChild(img)
-                  }
-                  // Remove timeout ID from tracking
-                  timeoutIdsRef.current = timeoutIdsRef.current.filter(id => id !== timeoutId)
-                }, 1000)
-                // Track timeout ID for cleanup
-                timeoutIdsRef.current.push(timeoutId)
-              }
-            })
-          })
+      // Create new image element for canvas rendering
+      const img = new Image()
+      img.crossOrigin = 'anonymous' // Enable CORS for canvas manipulation
+      
+      img.onload = () => {
+        currentImageRef.current = img
+        setCurrentImageUrl(newImageUrl)
+        
+        // Initial draw without effects
+        const canvas = canvasRef.current
+        if (canvas) {
+          const ctx = canvas.getContext('2d')
+          ctx.clearRect(0, 0, canvas.width, canvas.height)
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
         }
       }
+      
+      img.onerror = () => {
+        console.warn('Failed to load album art:', newImageUrl)
+      }
+      
+      img.src = newImageUrl
     }
-  }, [trackNumber, playlist])
+  }, [trackNumber, playlist, currentImageUrl])
 
   return (
-    <div 
-      ref={containerRef}
-      className={`album-art-background ${className || ''}`}
-    />
+    <div className={`album-art-background ${className || ''}`}>
+      <canvas
+        ref={canvasRef}
+        className="album-art-canvas"
+      />
+    </div>
   )
 }
 
