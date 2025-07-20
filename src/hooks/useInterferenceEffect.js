@@ -1,52 +1,78 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useCallback } from 'react'
 
 export const useCRTEffect = (canvas, image) => {
-  const animationIdRef = useRef(null)
-  const timeRef = useRef(0)
 
   const drawCRTEffects = useCallback(() => {
     if (!canvas || !image) {
-      console.log('CRT Effect: Canvas or image not ready', { canvas: !!canvas, image: !!image })
       return
     }
 
     const ctx = canvas.getContext('2d')
     const { width, height } = canvas
-    
-    // Update animation time
-    timeRef.current += 0.016 // ~60fps
 
     // Clear canvas
     ctx.clearRect(0, 0, width, height)
 
-    // First draw the base image normally
-    ctx.drawImage(image, 0, 0, width, height)
+    // Calculate tile dimensions for 3x2 grid (6 tiles total)
+    const cols = 3
+    const rows = 2
+    const tileWidth = width / cols
+    const tileHeight = height / rows
 
-    // === CHROMATIC ABERRATION ===
-    // Draw RGB channels with slight offsets
-    const aberrationAmount = 3 // Slightly larger offset
-    
-    ctx.save()
-    ctx.globalCompositeOperation = 'multiply'
-    
-    // Red channel (shifted left)
-    ctx.globalAlpha = 0.9
-    ctx.drawImage(image, -aberrationAmount, 0, width, height)
-    
-    // Blue channel (shifted right)
-    ctx.globalAlpha = 0.9  
-    ctx.drawImage(image, aberrationAmount, 0, width, height)
-    
-    ctx.restore()
+    // Color variations for each tile with static vignette intensities
+    const tileVariations = [
+      { brightness: 1.2, hue: 0, saturation: 1.0, vignetteIntensity: 0.3 },   // Brighter
+      { brightness: 0.7, hue: 0, saturation: 1.0, vignetteIntensity: 0.5 },   // Darker
+      { brightness: 1.0, hue: 20, saturation: 1.3, vignetteIntensity: 0.4 },  // Red tint
+      { brightness: 1.0, hue: 60, saturation: 1.2, vignetteIntensity: 0.6 },  // Yellow tint
+      { brightness: 1.0, hue: 120, saturation: 1.2, vignetteIntensity: 0.2 }, // Green tint
+      { brightness: 0.9, hue: 180, saturation: 1.1, vignetteIntensity: 0.45 } // Cyan tint
+    ]
 
+    // Draw each tile with its variations
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const tileIndex = row * cols + col
+        const variation = tileVariations[tileIndex]
+        
+        const x = col * tileWidth
+        const y = row * tileHeight
+
+        // Save context for this tile
+        ctx.save()
+        
+        // Clip to tile area
+        ctx.beginPath()
+        ctx.rect(x, y, tileWidth, tileHeight)
+        ctx.clip()
+
+        // Apply color filter for this tile
+        ctx.filter = `brightness(${variation.brightness}) hue-rotate(${variation.hue}deg) saturate(${variation.saturation})`
+        
+        // Draw the base image for this tile
+        ctx.drawImage(image, x, y, tileWidth, tileHeight)
+        
+        // Reset filter for effects
+        ctx.filter = 'none'
+
+        // Apply CRT effects to this tile
+        drawTileCRTEffects(ctx, x, y, tileWidth, tileHeight, variation, tileIndex)
+        
+        // Restore context
+        ctx.restore()
+      }
+    }
+  }, [canvas, image])
+
+  const drawTileCRTEffects = (ctx, x, y, width, height, variation, tileIndex) => {
     // === HORIZONTAL SCANLINES ===
-    // Static thin horizontal lines across the screen
+    // Static thin horizontal lines across the tile
     ctx.save()
     ctx.globalCompositeOperation = 'multiply'
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)' // Much more visible
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)'
     
-    for (let y = 0; y < height; y += 2) {
-      ctx.fillRect(0, y, width, 1)
+    for (let lineY = y; lineY < y + height; lineY += 2) {
+      ctx.fillRect(x, lineY, width, 1)
     }
     ctx.restore()
 
@@ -54,14 +80,14 @@ export const useCRTEffect = (canvas, image) => {
     // Colored vertical lines mimicking CRT phosphors
     ctx.save()
     ctx.globalCompositeOperation = 'overlay'
-    ctx.globalAlpha = 0.15 // Much more visible
+    ctx.globalAlpha = 0.15
     
     const stripWidth = 1
     const stripSpacing = 3
     
-    for (let x = 0; x < width; x += stripSpacing) {
+    for (let lineX = x; lineX < x + width; lineX += stripSpacing) {
       // Cycle through RGB pattern
-      const colorIndex = Math.floor(x / stripSpacing) % 3
+      const colorIndex = Math.floor((lineX - x) / stripSpacing) % 3
       if (colorIndex === 0) {
         ctx.fillStyle = '#ff0000' // Red
       } else if (colorIndex === 1) {
@@ -70,20 +96,20 @@ export const useCRTEffect = (canvas, image) => {
         ctx.fillStyle = '#0000ff' // Blue
       }
       
-      ctx.fillRect(x, 0, stripWidth, height)
+      ctx.fillRect(lineX, y, stripWidth, height)
     }
     ctx.restore()
 
-    // === ANIMATED VIGNETTE ===
-    // Smooth pulsing vignette effect with lower max intensity
-    const vignetteIntensity = 0.4 + Math.sin(timeRef.current * 4) * 0.2 // Smooth pulse (0.2 to 0.6)
+    // === STATIC VIGNETTE ===
+    // Each tile has a fixed vignette intensity
+    const vignetteIntensity = variation.vignetteIntensity
     
     ctx.save()
     
-    // Create radial gradient for vignette
-    const centerX = width / 2
-    const centerY = height / 2
-    const radius = Math.max(width, height) * 0.5 // Even smaller radius for stronger effect
+    // Create radial gradient for vignette centered on tile
+    const centerX = x + width / 2
+    const centerY = y + height / 2
+    const radius = Math.max(width, height) * 0.5
     
     const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius)
     gradient.addColorStop(0, `rgba(0, 0, 0, 0)`)
@@ -91,7 +117,7 @@ export const useCRTEffect = (canvas, image) => {
     gradient.addColorStop(1, `rgba(0, 0, 0, ${vignetteIntensity})`)
     
     ctx.fillStyle = gradient
-    ctx.fillRect(0, 0, width, height)
+    ctx.fillRect(x, y, width, height)
     
     ctx.restore()
 
@@ -100,41 +126,29 @@ export const useCRTEffect = (canvas, image) => {
     ctx.save()
     ctx.globalCompositeOperation = 'multiply'
     
-    // Top and bottom edge darkening
-    const edgeGradientTop = ctx.createLinearGradient(0, 0, 0, height * 0.1)
+    // Top and bottom edge darkening for this tile
+    const edgeGradientTop = ctx.createLinearGradient(0, y, 0, y + height * 0.1)
     edgeGradientTop.addColorStop(0, 'rgba(0, 0, 0, 0.8)')
     edgeGradientTop.addColorStop(1, 'rgba(0, 0, 0, 1)')
     
     ctx.fillStyle = edgeGradientTop
-    ctx.fillRect(0, 0, width, height * 0.02)
+    ctx.fillRect(x, y, width, height * 0.02)
     
-    const edgeGradientBottom = ctx.createLinearGradient(0, height, 0, height * 0.9)
+    const edgeGradientBottom = ctx.createLinearGradient(0, y + height, 0, y + height * 0.9)
     edgeGradientBottom.addColorStop(0, 'rgba(0, 0, 0, 0.8)')
     edgeGradientBottom.addColorStop(1, 'rgba(0, 0, 0, 1)')
     
     ctx.fillStyle = edgeGradientBottom
-    ctx.fillRect(0, height * 0.98, width, height * 0.02)
+    ctx.fillRect(x, y + height * 0.98, width, height * 0.02)
     
     ctx.restore()
-
-  }, [canvas, image])
-
-  const animate = useCallback(() => {
-    drawCRTEffects()
-    animationIdRef.current = requestAnimationFrame(animate)
-  }, [drawCRTEffects])
+  }
 
   useEffect(() => {
-    console.log('CRT Effect: Starting animation loop')
-    animate()
-
-    return () => {
-      console.log('CRT Effect: Stopping animation loop')
-      if (animationIdRef.current) {
-        cancelAnimationFrame(animationIdRef.current)
-      }
+    if (canvas && image) {
+      drawCRTEffects()
     }
-  }, [animate])
+  }, [canvas, image, drawCRTEffects])
 
   return { drawCRTEffects }
 }
