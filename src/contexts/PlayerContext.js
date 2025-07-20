@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useReducer, useCallback, useMemo } from 'react'
-import { loadMoodPlaylist, getMoodById } from '../data/moods'
+import React, { createContext, useContext, useReducer, useCallback, useMemo, useEffect } from 'react'
+import { loadMoodPlaylist, getMoodById, moods } from '../data/moods'
 
 const PlayerContext = createContext()
 
@@ -12,7 +12,9 @@ const initialState = {
   trackNumber: 0,
   playingStatus: { position: 0, duration: 0 },
   playlistLoading: false,
-  playlistError: null
+  playlistError: null,
+  playlistCache: {},
+  preloadingComplete: false
 }
 
 const playerReducer = (state, action) => {
@@ -82,6 +84,16 @@ const playerReducer = (state, action) => {
         ...state,
         loadingStatus: msg
       }
+    case 'SET_PLAYLIST_CACHE':
+      return {
+        ...state,
+        playlistCache: action.cache
+      }
+    case 'SET_PRELOADING_COMPLETE':
+      return {
+        ...state,
+        preloadingComplete: action.complete
+      }
     default:
       return state
   }
@@ -89,6 +101,27 @@ const playerReducer = (state, action) => {
 
 export const PlayerProvider = ({ children }) => {
   const [state, dispatch] = useReducer(playerReducer, initialState)
+
+  // Preload all mood playlists on mount
+  useEffect(() => {
+    const preloadAllPlaylists = async () => {
+      const cache = {}
+      const loadPromises = moods.map(async (mood) => {
+        try {
+          const playlist = await loadMoodPlaylist(mood.id, NUMBER_SONGS_PER_TRACK)
+          cache[mood.id] = playlist
+        } catch (error) {
+          console.error(`Failed to preload ${mood.id} playlist:`, error)
+        }
+      })
+
+      await Promise.all(loadPromises)
+      dispatch({ type: 'SET_PLAYLIST_CACHE', cache })
+      dispatch({ type: 'SET_PRELOADING_COMPLETE', complete: true })
+    }
+
+    preloadAllPlaylists()
+  }, [])
 
   const setMood = useCallback(async (moodData) => {
     try {
@@ -104,24 +137,32 @@ export const PlayerProvider = ({ children }) => {
         mood = { ...moodData }
       }
 
-      // Start loading
-      dispatch({ type: 'SET_PLAYLIST_LOADING', loading: true })
-      
-      // Load playlist from Jamendo if not already loaded
-      if (!mood.playlist) {
+      // Use cached playlist if available
+      if (state.playlistCache[mood.id]) {
+        mood.playlist = state.playlistCache[mood.id]
+        // Set the mood immediately without loading
+        dispatch({ type: 'SET_MOOD', mood })
+      } else {
+        // Fallback to loading if cache miss (shouldn't happen after preload)
+        dispatch({ type: 'SET_PLAYLIST_LOADING', loading: true })
+        
         const tracks = await loadMoodPlaylist(mood.id || mood.name)
         mood.playlist = tracks
+        
+        // Update cache with the newly loaded playlist
+        const newCache = { ...state.playlistCache, [mood.id]: tracks }
+        dispatch({ type: 'SET_PLAYLIST_CACHE', cache: newCache })
+        
+        // Set the mood with loaded playlist
+        dispatch({ type: 'SET_MOOD', mood })
+        dispatch({ type: 'SET_PLAYLIST_LOADING', loading: false })
       }
-      
-      // Set the mood with loaded playlist
-      dispatch({ type: 'SET_MOOD', mood })
-      dispatch({ type: 'SET_PLAYLIST_LOADING', loading: false })
       
     } catch (error) {
       console.error('Error loading mood playlist:', error)
       dispatch({ type: 'SET_PLAYLIST_ERROR', error: error.message })
     }
-  }, [])
+  }, [state.playlistCache])
 
   const setPlayStatus = useCallback((playStatus) => {
     dispatch({ type: 'SET_PLAY_STATUS', playStatus })
@@ -146,6 +187,7 @@ export const PlayerProvider = ({ children }) => {
     moodObject: state.mood,
     playlistLoading: state.playlistLoading,
     playlistError: state.playlistError,
+    preloadingComplete: state.preloadingComplete,
     setMood,
     setPlayStatus,
     setTrackNumber,
