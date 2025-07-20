@@ -17,7 +17,7 @@ A modern, responsive music player built with React featuring a retro-styled inte
 
 - **Mood-Based Playlists** - Curated music collections for different vibes
 - **Seamless Audio Playback** - Powered by Howler.js for optimal performance
-- **YouTube Integration** - Stream music directly from YouTube
+- **Jamendo API Integration** - Stream high-quality music with proper artist credits
 - **Retro UI Design** - Custom vintage-inspired interface with smooth animations
 - **Responsive Design** - Works beautifully across desktop and mobile devices
 - **Progressive Web App** - Installable with offline capabilities
