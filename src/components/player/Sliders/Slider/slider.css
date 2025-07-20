@@ -144,6 +144,8 @@
   z-index: 110;
 }
 
+/* CSS animations disabled - using real-time frequency data instead */
+/*
 .sliderBtn.top.animated {
   animation-timing-function: ease-in-out;
   animation: sliderLg 4000ms infinite;
@@ -162,3 +164,4 @@
   animation: slideRightshortLg 3500ms infinite;
   animation-delay: 500ms;
 }
+*/

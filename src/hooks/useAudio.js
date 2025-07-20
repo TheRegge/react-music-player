@@ -36,6 +36,7 @@ export const useAudio = (url, options = {}) => {
       src: [url],
       format: ['mp3', 'mpeg'],
       volume: volume / 100,
+      html5: false, // Force Web Audio API for analyzer support
       onload: () => {
         console.log('Audio loaded successfully:', url)
         setLoading(false)
