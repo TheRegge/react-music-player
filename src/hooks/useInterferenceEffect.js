@@ -5,7 +5,13 @@ export const useCRTEffect = (canvas, image) => {
   const { size: windowSize } = useWindow()
 
   const drawCRTEffects = useCallback(() => {
-    if (!canvas || !image) {
+    if (!canvas) {
+      return
+    }
+
+    // Handle both single image and array of images (mosaic mode)
+    const images = Array.isArray(image) ? image : (image ? [image] : [])
+    if (images.length === 0) {
       return
     }
 
@@ -52,6 +58,9 @@ export const useCRTEffect = (canvas, image) => {
         const x = col * tileWidth
         const y = row * tileHeight
 
+        // Select image for this tile (cycle through available images)
+        const imageForTile = images[tileIndex % images.length]
+
         // Save context for this tile
         ctx.save()
         
@@ -64,7 +73,7 @@ export const useCRTEffect = (canvas, image) => {
         ctx.filter = `brightness(${variation.brightness}) hue-rotate(${variation.hue}deg) saturate(${variation.saturation})`
         
         // Draw the base image for this tile
-        ctx.drawImage(image, x, y, tileWidth, tileHeight)
+        ctx.drawImage(imageForTile, x, y, tileWidth, tileHeight)
         
         // Reset filter for effects
         ctx.filter = 'none'
