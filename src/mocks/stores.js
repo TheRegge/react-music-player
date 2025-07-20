@@ -1,5 +1,3 @@
-import playlists from '../data/playlists'
-
 const stores = {}
 stores.welcome = {
   player: {
@@ -23,7 +21,7 @@ stores.funkmood = {
   player: {
     mood: {
       name: 'funk',
-      playlist: playlists.funk
+      playlist: [] // Empty playlist for testing
     },
     playStatus: 'PAUSED',
     loadingStatus: 'Buffering 71%',
