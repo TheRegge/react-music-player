@@ -100,6 +100,8 @@ src/
 
 ## 🌐 Deployment
 
+**Live Demo**: [https://react-music-player-coral.vercel.app](https://react-music-player-coral.vercel.app)
+
 The project is production-ready with:
 - Optimized Vite build configuration
 - Apache `.htaccess` for client-side routing
