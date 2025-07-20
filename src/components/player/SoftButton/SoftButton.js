@@ -3,7 +3,7 @@ import { usePlayer } from '../../../contexts/PlayerContext'
 import './softButton.css'
 
 const SoftButton = props => {
-  const { setMood, setTrackNumber, setPlayStatus, playlistLoading } = usePlayer()
+  const { mood, setMood, setTrackNumber, setPlayStatus, playlistLoading } = usePlayer()
   
   const onClickHandler = async () => {
     try {
@@ -19,6 +19,7 @@ const SoftButton = props => {
 
   const buttonFullHeight = 54 // 42px + 12px for shadow
   const buttonFullWidth = 112 // 100px + 12px for shadow
+  const isActive = mood && mood.toLowerCase() === props.moodId
 
   return (
     <div
@@ -30,6 +31,7 @@ const SoftButton = props => {
       <div className="softButton_text">
         {playlistLoading ? 'Loading...' : props.text}
       </div>
+      <div className={`led-indicator ${isActive ? 'led-active' : 'led-inactive'}`}></div>
       <svg
         width={buttonFullWidth}
         height={buttonFullHeight}

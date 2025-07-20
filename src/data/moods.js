@@ -1,9 +1,9 @@
 import { fetchTracksByMood } from '../services/jamendoApi'
 
 export const _MOODS = {
-  rock: 'rock 🎸',
-  funk: 'funk 🎷',
-  pop: 'pop 🎤'
+  rock: 'ROCK',
+  funk: 'FUNK',
+  pop: 'POP'
 }
 
 // Static mood definitions (playlists will be loaded dynamically)
