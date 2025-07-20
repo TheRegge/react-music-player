@@ -100,7 +100,7 @@ src/
 
 ## 🌐 Deployment
 
-**Live Demo**: [https://react-music-player-coral.vercel.app](https://react-music-player-coral.vercel.app)
+**Live Demo**: [https://react-music-player-rho-one.vercel.app/](https://react-music-player-rho-one.vercel.app/)
 
 The project is production-ready with:
 - Optimized Vite build configuration
