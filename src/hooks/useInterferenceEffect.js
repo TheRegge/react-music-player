@@ -1,6 +1,8 @@
 import { useEffect, useCallback } from 'react'
+import { useWindow } from '../contexts/WindowContext'
 
 export const useCRTEffect = (canvas, image) => {
+  const { size: windowSize } = useWindow()
 
   const drawCRTEffects = useCallback(() => {
     if (!canvas || !image) {
@@ -13,14 +15,17 @@ export const useCRTEffect = (canvas, image) => {
     // Clear canvas
     ctx.clearRect(0, 0, width, height)
 
-    // Calculate tile dimensions for 3x2 grid (6 tiles total)
-    const cols = 3
+    // Calculate tile dimensions based on screen size
+    // Small/medium screens (phones/tablets): 2x2 grid (4 tiles)
+    // Large screens (desktop): 3x2 grid (6 tiles)
+    const isSmallOrMedium = windowSize === 'xs' || windowSize === 'sm'
+    const cols = isSmallOrMedium ? 2 : 3
     const rows = 2
     const tileWidth = width / cols
     const tileHeight = height / rows
 
     // Color variations for each tile with static vignette intensities
-    const tileVariations = [
+    const tileVariations6 = [
       { brightness: 1.2, hue: 0, saturation: 1.0, vignetteIntensity: 0.3 },   // Brighter
       { brightness: 0.7, hue: 0, saturation: 1.0, vignetteIntensity: 0.5 },   // Darker
       { brightness: 1.0, hue: 20, saturation: 1.3, vignetteIntensity: 0.4 },  // Red tint
@@ -28,6 +33,15 @@ export const useCRTEffect = (canvas, image) => {
       { brightness: 1.0, hue: 120, saturation: 1.2, vignetteIntensity: 0.2 }, // Green tint
       { brightness: 0.9, hue: 180, saturation: 1.1, vignetteIntensity: 0.45 } // Cyan tint
     ]
+    
+    const tileVariations4 = [
+      { brightness: 1.2, hue: 0, saturation: 1.0, vignetteIntensity: 0.3 },   // Brighter
+      { brightness: 0.7, hue: 0, saturation: 1.0, vignetteIntensity: 0.5 },   // Darker
+      { brightness: 1.0, hue: 20, saturation: 1.3, vignetteIntensity: 0.4 },  // Red tint
+      { brightness: 1.0, hue: 120, saturation: 1.2, vignetteIntensity: 0.2 }  // Green tint
+    ]
+    
+    const tileVariations = isSmallOrMedium ? tileVariations4 : tileVariations6
 
     // Draw each tile with its variations
     for (let row = 0; row < rows; row++) {
@@ -62,7 +76,7 @@ export const useCRTEffect = (canvas, image) => {
         ctx.restore()
       }
     }
-  }, [canvas, image])
+  }, [canvas, image, windowSize])
 
   const drawTileCRTEffects = (ctx, x, y, width, height, variation, tileIndex) => {
     // === HORIZONTAL SCANLINES ===

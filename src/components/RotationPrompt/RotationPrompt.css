@@ -1,0 +1,83 @@
+.rotation-prompt {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: tomato;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: white;
+}
+
+.rotation-prompt-content {
+  text-align: center;
+  padding: 2rem;
+  max-width: 300px;
+}
+
+.rotation-icon {
+  margin-bottom: 1.5rem;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.rotation-icon svg {
+  width: 80px;
+  height: 80px;
+  color: #fff;
+}
+
+.rotation-arrows {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.rotation-title {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rotation-message {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Hide rotation prompt on landscape or wider devices */
+@media (orientation: landscape) or (min-width: 768px) {
+  .rotation-prompt {
+    display: none;
+  }
+}
+
+/* Only show on narrow mobile devices in portrait mode */
+@media (orientation: portrait) and (max-width: 767px) and (max-height: 812px) {
+  .rotation-prompt {
+    display: flex;
+  }
+}
