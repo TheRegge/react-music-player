@@ -1,8 +1,23 @@
 // Jamendo API Service
 // API Documentation: https://developer.jamendo.com/v3.0
 
+import { checkRateLimit, recordApiCall, formatTimeRemaining } from '../utils/rateLimiter'
+import { retryWithBackoff, isRetryableError } from '../utils/retryWithBackoff'
+
 const JAMENDO_API_BASE = 'https://api.jamendo.com/v3.0'
 const CLIENT_ID = import.meta.env.VITE_JAMENDO_CLIENT_ID
+
+// Development mode flag
+const USE_MOCK_DATA = import.meta.env.DEV && import.meta.env.VITE_USE_MOCK_DATA === 'true'
+
+// Lazy load mock data only when needed
+let mockData = null
+const getMockData = async () => {
+  if (!mockData) {
+    mockData = await import('./mockData.json')
+  }
+  return mockData.default || mockData
+}
 
 // Genre mapping from our moods to Jamendo tags
 const GENRE_MAPPING = {
@@ -19,6 +34,14 @@ class JamendoApiError extends Error {
   }
 }
 
+class RateLimitError extends Error {
+  constructor(message, resetIn) {
+    super(message)
+    this.name = 'RateLimitError'
+    this.resetIn = resetIn
+  }
+}
+
 /**
  * Fetch tracks from Jamendo API by genre/mood
  * @param {string} mood - The mood/genre ('rock', 'funk', 'pop')
@@ -27,6 +50,33 @@ class JamendoApiError extends Error {
  */
 export const fetchTracksByMood = async (mood, limit = 10) => {
   try {
+    // Use mock data in development if enabled
+    if (USE_MOCK_DATA) {
+      console.log(`[Mock Mode] Fetching ${mood} tracks from mock data`)
+      const data = await getMockData()
+      
+      if (data.moods && data.moods[mood]) {
+        const tracks = data.moods[mood].tracks || []
+        // Return only the requested number of tracks
+        return transformTracksData(tracks.slice(0, limit))
+      }
+      
+      // Fallback to empty array if mood not found in mock data
+      console.warn(`[Mock Mode] Mood '${mood}' not found in mock data`)
+      return []
+    }
+    
+    // Check rate limit before making API call
+    const rateLimit = checkRateLimit()
+    if (!rateLimit.allowed) {
+      const timeRemaining = formatTimeRemaining(rateLimit.resetIn)
+      throw new RateLimitError(
+        `API rate limit exceeded. Please try again in ${timeRemaining}.`,
+        rateLimit.resetIn
+      )
+    }
+    
+    // Original API call logic
     const genres = GENRE_MAPPING[mood] || [mood]
     const tagsQuery = genres.join(' ')
     
@@ -40,17 +90,35 @@ export const fetchTracksByMood = async (mood, limit = 10) => {
       order: 'popularity_total'
     })
 
-    const response = await fetch(`${JAMENDO_API_BASE}/tracks/?${params}`)
-    
-    if (!response.ok) {
-      throw new JamendoApiError(`HTTP error! status: ${response.status}`, response.status)
-    }
+    // Wrap API call in retry logic
+    const fetchWithRetry = async () => {
+      // Record the API call
+      recordApiCall()
+      
+      const response = await fetch(`${JAMENDO_API_BASE}/tracks/?${params}`)
+      
+      if (!response.ok) {
+        throw new JamendoApiError(`HTTP error! status: ${response.status}`, response.status)
+      }
 
-    const data = await response.json()
-    
-    if (data.headers?.status !== 'success') {
-      throw new JamendoApiError(`API error: ${data.headers?.error_message || 'Unknown error'}`)
+      const data = await response.json()
+      
+      if (data.headers?.status !== 'success') {
+        throw new JamendoApiError(`API error: ${data.headers?.error_message || 'Unknown error'}`)
+      }
+
+      return data
     }
+    
+    // Execute with retry logic
+    const data = await retryWithBackoff(fetchWithRetry, {
+      maxRetries: 3,
+      initialDelay: 1000,
+      shouldRetry: isRetryableError,
+      onRetry: ({ attempt, maxRetries, delay }) => {
+        console.log(`Retrying Jamendo API call (attempt ${attempt}/${maxRetries}) after ${Math.round(delay)}ms...`)
+      }
+    })
 
     return transformTracksData(data.results || [])
   } catch (error) {
@@ -188,4 +256,4 @@ export const getTrackById = async (trackId) => {
   }
 }
 
-export { JamendoApiError }
+export { JamendoApiError, RateLimitError }
