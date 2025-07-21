@@ -1,15 +1,15 @@
 # React Music Player
 
-````
-  __  __           _        _____  _                       
- |  \/  |         (_)      |  __ \| |                      
- | \  / |_   _ ___ _  ___  | |__) | | __ _ _   _  ___ _ __  
- | |\/| | | | / __| |/ __| |  ___/| |/ _` | | | |/ _ \ '__|  
- | |  | | |_| \__ \ | (__  | |    | | (_| | |_| |  __/ |   
- |_|  |_|\__,_|___/_|\___| |_|    |_|\__,_|\__, |\___|_|   
-                                            __/ |          
-                                           |___/           
-````
+```
+  __  __           _        _____  _
+ |  \/  |         (_)      |  __ \| |
+ | \  / |_   _ ___ _  ___  | |__) | | __ _ _   _  ___ _ __
+ | |\/| | | | / __| |/ __| |  ___/| |/ _` | | | |/ _ \ '__|
+ | |  | | |_| \__ \ | (__  | |    | | (_| | |_| |  __/ |
+ |_|  |_|\__,_|___/_|\___| |_|    |_|\__,_|\__, |\___|_|
+                                            __/ |
+                                           |___/
+```
 
 A modern, responsive music player built with React featuring a retro-styled interface, mood-based playlists, and seamless audio playback.
 
@@ -39,23 +39,27 @@ A modern, responsive music player built with React featuring a retro-styled inte
 ## 🛠️ Getting Started
 
 ### Prerequisites
+
 - Node.js (v16 or higher)
 - npm or yarn
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/TheRegge/react-music-player.git
    cd react-music-player
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -65,12 +69,12 @@ A modern, responsive music player built with React featuring a retro-styled inte
 
 ### Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server with hot reload |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build locally |
-| `npm test` | Run test suite with Vitest |
+| Command           | Description                              |
+| ----------------- | ---------------------------------------- |
+| `npm run dev`     | Start development server with hot reload |
+| `npm run build`   | Build for production                     |
+| `npm run preview` | Preview production build locally         |
+| `npm test`        | Run test suite with Vitest               |
 
 ## 🎨 Project Structure
 
@@ -107,6 +111,7 @@ src/
 **Live Demo**: [https://react-music-player-rho-one.vercel.app/](https://react-music-player-rho-one.vercel.app/)
 
 The project is production-ready with:
+
 - Optimized Vite build configuration
 - Apache `.htaccess` for client-side routing
 - Progressive Web App manifest
@@ -119,6 +124,7 @@ Deploy to any static hosting service (Netlify, Vercel, GitHub Pages, etc.)
 This project showcases modern React development practices, clean architecture, and attention to user experience. Built as a demonstration of full-stack development capabilities for freelance opportunities.
 
 **Connect with me:**
+
 - Portfolio: [zaleman.co](https://zaleman.co)
 - GitHub: [TheRegge](https://github.com/TheRegge)
 
@@ -128,4 +134,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-*Built with ❤️ and lots of ☕ by a passionate developer who loves great music and clean code.*
+_Built with ❤️ and lots of ☕ by a passionate developer who loves great music and clean code._

@@ -4,7 +4,8 @@
       "Bash(npm install:*)",
       "Bash(cp:*)",
       "WebFetch(domain:api.jamendo.com)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npm test:*)"
     ],
     "deny": []
   }

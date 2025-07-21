@@ -1,50 +1,113 @@
-import React from 'react'
-import { Provider } from 'react-redux'
-import configureStore from 'redux-mock-store'
-import { cleanup, render, screen } from '@testing-library/react'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { cleanup, screen, render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { moods, _MOODS } from './data/moods'
-import stores from './mocks/stores'
 import App from './App'
-import { setMood } from './actions/player'
 
-const mockStore = configureStore([])
+const mockSetMood = vi.fn()
 
-describe('App Component with initial Store state', () => {
+// Mock the bot detection module
+vi.mock('./utils/botDetection', () => ({
+  botDetector: {
+    recordPageLoad: vi.fn(() => ({
+      isSuspicious: false,
+      loadCount: 1,
+      timeWindow: 60000,
+      threshold: 10
+    }))
+  }
+}))
+
+// Mock the contexts
+vi.mock('./contexts/PlayerContext', () => ({
+  usePlayer: () => ({
+    mood: undefined,
+    playlist: undefined,
+    moodObject: undefined,
+    playStatus: 'STOPPED',
+    loadingStatus: '',
+    trackNumber: 0,
+    playingStatus: { position: 0, duration: 0 },
+    playlistLoading: false,
+    playlistError: null,
+    preloadingComplete: false,
+    playlistCache: {},
+    setMood: mockSetMood,
+    setPlayStatus: vi.fn(),
+    setTrackNumber: vi.fn(),
+    setLoadingStatus: vi.fn(),
+    setPlayingStatus: vi.fn(),
+  }),
+  PlayerProvider: ({ children }) => children,
+}))
+
+vi.mock('./contexts/WindowContext', () => ({
+  useWindow: () => ({
+    size: 'lg',
+    width: 1920,
+    height: 1080,
+  }),
+  WindowProvider: ({ children }) => children,
+}))
+
+describe('App Component with initial state', () => {
   let component
-  let store
-  const welcomeMsg = 'Select a playlist with the buttons on the right!'
 
   beforeEach(() => {
-    store = mockStore(stores.welcome)
-
-    store.dispatch = jest.fn()
-
-    component = render(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    )
+    component = render(<App />)
   })
 
   afterEach(() => {
     cleanup()
     component = null
-    jest.restoreAllMocks()
+    vi.clearAllMocks()
   })
 
-  it('should render with the given state from the Redux store', () => {
-    expect(component).toMatchSnapshot()
+  it('should render without crashing', () => {
+    expect(component).toBeTruthy()
   })
 
-  it('should dispatch the correct action on softButton click', () => {
-    const softButton = screen.getByText(_MOODS.rock)
-    userEvent.click(softButton)
-
-    // using Nth = 2 because the store dispaches the WindowSize event
-    // automatically when the WindowDimensions component is mounted
-    expect(store.dispatch).toHaveBeenNthCalledWith(2, setMood(moods[0].name))
+  it('should render the Player component', () => {
+    // Check that main player elements are present
+    const playerElement = component.container.querySelector('.container')
+    expect(playerElement).toBeInTheDocument()
   })
 
-  it('sets the player correctly when clicking on mood button', () => {})
+  it('should display header links', () => {
+    const githubLink = screen.getByText('GitHub')
+    const portfolioLink = screen.getByText('Portfolio')
+    
+    expect(githubLink).toBeInTheDocument()
+    expect(portfolioLink).toBeInTheDocument()
+    expect(githubLink.getAttribute('href')).toBe('https://github.com/TheRegge/react-music-player')
+    expect(portfolioLink.getAttribute('href')).toBe('https://zaleman.co')
+  })
+
+  it('should have correct CSS classes based on window size', () => {
+    const appElement = component.container.querySelector('.app')
+    const containerElement = component.container.querySelector('.container')
+    
+    expect(appElement).toHaveClass('app', 'lg')
+    expect(containerElement).toHaveClass('container', 'lg')
+  })
+
+  it('should render mood selection buttons', async () => {
+    // Look for mood buttons (they should be rendered by the Player component)
+    const rockButton = await screen.findByText(_MOODS.rock)
+    const funkButton = await screen.findByText(_MOODS.funk)
+    const popButton = await screen.findByText(_MOODS.pop)
+    
+    expect(rockButton).toBeInTheDocument()
+    expect(funkButton).toBeInTheDocument()
+    expect(popButton).toBeInTheDocument()
+  })
+
+  it('should call setMood when mood button is clicked', async () => {
+    const user = userEvent.setup()
+    const rockButton = await screen.findByLabelText(`Select mood ${_MOODS.rock}`)
+    
+    await user.click(rockButton)
+    
+    expect(mockSetMood).toHaveBeenCalledWith(moods[0].id)
+  })
 })
