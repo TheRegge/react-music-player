@@ -1,0 +1,155 @@
+.bot-challenge-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.bot-challenge {
+  background: #1a1a1a;
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease-out;
+}
+
+.bot-challenge__content {
+  text-align: center;
+}
+
+.bot-challenge__title {
+  color: #fff;
+  font-size: 24px;
+  margin: 0 0 15px 0;
+  font-weight: 600;
+}
+
+.bot-challenge__description {
+  color: #aaa;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0 0 30px 0;
+}
+
+.bot-challenge__form {
+  margin: 0 0 20px 0;
+}
+
+.bot-challenge__label {
+  display: block;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 0 20px 0;
+}
+
+.bot-challenge__input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 18px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid #444;
+  border-radius: 8px;
+  color: #fff;
+  transition: all 0.2s ease;
+  margin: 0 0 15px 0;
+}
+
+.bot-challenge__input:focus {
+  outline: none;
+  border-color: #1db954;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.bot-challenge__input--error {
+  border-color: #ff4444;
+  animation: shake 0.5s ease-out;
+}
+
+.bot-challenge__input::placeholder {
+  color: #666;
+}
+
+.bot-challenge__error {
+  color: #ff4444;
+  font-size: 14px;
+  margin: -10px 0 15px 0;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.bot-challenge__button {
+  width: 100%;
+  padding: 14px 24px;
+  background: #1db954;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bot-challenge__button:hover {
+  background: #1ed760;
+  transform: translateY(-1px);
+}
+
+.bot-challenge__button:active {
+  transform: translateY(0);
+}
+
+.bot-challenge__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bot-challenge__note {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}

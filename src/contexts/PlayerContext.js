@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useReducer, useCallback, useMemo, useEffect } from 'react'
 import { loadMoodPlaylist, getMoodById, moods } from '../data/moods'
+import { RateLimitError } from '../services/jamendoApi'
+import { checkRateLimit } from '../utils/rateLimiter'
 
 const PlayerContext = createContext()
 
@@ -112,6 +114,14 @@ export const PlayerProvider = ({ children }) => {
           cache[mood.id] = playlist
         } catch (error) {
           console.error(`Failed to preload ${mood.id} playlist:`, error)
+          // Store error info in cache for better error handling
+          if (error instanceof RateLimitError) {
+            dispatch({ type: 'SET_PLAYLIST_ERROR', error: {
+              message: error.message,
+              type: 'rate_limit',
+              resetIn: error.resetIn
+            }})
+          }
         }
       })
 
@@ -160,7 +170,22 @@ export const PlayerProvider = ({ children }) => {
       
     } catch (error) {
       console.error('Error loading mood playlist:', error)
-      dispatch({ type: 'SET_PLAYLIST_ERROR', error: error.message })
+      
+      // Handle rate limit errors specifically
+      if (error instanceof RateLimitError) {
+        dispatch({ type: 'SET_PLAYLIST_ERROR', error: {
+          message: error.message,
+          type: 'rate_limit',
+          resetIn: error.resetIn
+        }})
+      } else {
+        dispatch({ type: 'SET_PLAYLIST_ERROR', error: {
+          message: error.message || 'Failed to load playlist',
+          type: 'generic'
+        }})
+      }
+      
+      dispatch({ type: 'SET_PLAYLIST_LOADING', loading: false })
     }
   }, [state.playlistCache])
 
